@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para o Meu Amor ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe6e6, #ffb3b3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        h1 {
+            color: #d63031;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            padding: 0 20px;
+        }
+
+        p {
+            color: #636e72;
+            font-size: 1rem;
+            margin-bottom: 40px;
+        }
+
+        /* O Coração Batendo */
+        .heart-container {
+            position: relative;
+            cursor: pointer;
+            animation: beat 1.2s infinite alternate;
+            transform-origin: center;
+            display: inline-block;
+            transition: transform 0.1s ease;
+        }
+
+        .heart-container:active {
+            transform: scale(0.9);
+        }
+
+        .heart {
+            background-color: #d63031;
+            display: inline-block;
+            height: 100px;
+            position: relative;
+            top: 0;
+            transform: rotate(-45deg);
+            width: 100px;
+            border-radius: 5px;
+        }
+
+        .heart:before, .heart:after {
+            content: "";
+            background-color: #d63031;
+            border-radius: 50%;
+            height: 100px;
+            position: absolute;
+            width: 100px;
+        }
+
+        .heart:before {
+            top: -50px;
+            left: 0;
+        }
+
+        .heart:after {
+            top: 0;
+            left: 50px;
+        }
+
+        /* Animação do Batimento */
+        @keyframes beat {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* Caixa de Frases */
+        .message-box {
+            margin-top: 60px;
+            height: 60px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message {
+            color: #2d3436;
+            font-size: 1.3rem;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            max-width: 300px;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Efeito de Mini Corações Flutuantes ao Clicar */
+        .floating-heart {
+            position: absolute;
+            color: #d63031;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5) rotate(20deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Toque no coração para ver uma mensagem...</h1>
+    <p>(Ative o som para uma surpresa!)</p>
+
+    <div class="heart-container" id="heartBtn">
+        <div class="heart"></div>
+    </div>
+
+    <div class="message-box">
+        <div class="message" id="textMessage">Eu te amo muito! ❤️</div>
+    </div>
+
+    <script>
+        // Personalize as suas frases aqui dentro das aspas:
+        const frases = [
+            "Você é o meu pensamento favorito do dia. ",
+            "Cada detalhe teu me faz ter certeza de que quero você para sempre.",
+            "Obrigado por ser minha parceria de todas as horas. ",
+            "Meu lugar favorito no mundo é dentro do teu abraço.",
+            "Seu sorriso é a coisa mais linda desse universo. ",
+            "Você não imagina o tamanho do meu amor por vc.",
+            "Com você, os dias mais simples viram os melhores momentos.",
+            "Você é o meu amor, minha melhor amiga e meu porto seguro. "
+        ];
+
+        let index = 0;
+        const heartBtn = document.getElementById('heartBtn');
+        const textMessage = document.getElementById('textMessage');
+
+        heartBtn.addEventListener('click', (e) => {
+            // 1. Troca a frase com efeito fade-in
+            textMessage.classList.remove('show');
+            
+            setTimeout(() => {
+                textMessage.textContent = frases[index];
+                textMessage.classList.add('show');
+                index = (index + 1) % frases.length; // Volta para o início quando as frases acabarem
+            }, 200);
+
+            // 2. Cria o efeito visual de corações flutuando onde ela clicou
+            createFloatingHeart(e.clientX, e.clientY);
+        });
+
+        function createFloatingHeart(x, y) {
+            const fHeart = document.createElement('div');
+            fHeart.innerHTML = '❤️';
+            fHeart.classList.add('floating-heart');
+            fHeart.style.left = (x - 10) + 'px';
+            fHeart.style.top = (y - 20) + 'px';
+            
+            // Direção aleatória para os lados enquanto sobe
+            const randomX = (Math.random() - 0.5) * 40;
+            fHeart.style.setProperty('--randX', `${randomX}px`);
+
+            document.body.appendChild(fHeart);
+
+            setTimeout(() => {
+                fHeart.remove();
+            }, 1000);
+        }
+
+        // Mostra a primeira frase logo de cara
+        textMessage.classList.add('show');
+    </script>
+</body>
+</html>
