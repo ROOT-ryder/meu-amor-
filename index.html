@@ -15,15 +15,25 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #ffe6e6, #ffb3b3);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
+            overflow-x: hidden;
             text-align: center;
+        }
+
+        .screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 20px;
         }
 
         h1 {
             color: #d63031;
             font-size: 1.8rem;
             margin-bottom: 10px;
-            padding: 0 20px;
         }
 
         p {
@@ -66,17 +76,9 @@
             width: 100px;
         }
 
-        .heart:before {
-            top: -50px;
-            left: 0;
-        }
+        .heart:before { top: -50px; left: 0; }
+        .heart:after { top: 0; left: 50px; }
 
-        .heart:after {
-            top: 0;
-            left: 50px;
-        }
-
-        /* Animação do Batimento */
         @keyframes beat {
             0% { transform: scale(1); }
             100% { transform: scale(1.15); }
@@ -85,11 +87,7 @@
         /* Caixa de Frases */
         .message-box {
             margin-top: 60px;
-            height: 60px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 60px;
         }
 
         .message {
@@ -99,7 +97,7 @@
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.5s ease;
-            max-width: 300px;
+            max-width: 320px;
         }
 
         .message.show {
@@ -107,7 +105,6 @@
             transform: translateY(0);
         }
 
-        /* Efeito de Mini Corações Flutuantes ao Clicar */
         .floating-heart {
             position: absolute;
             color: #d63031;
@@ -120,50 +117,201 @@
             0% { opacity: 1; transform: translateY(0) scale(1); }
             100% { opacity: 0; transform: translateY(-100px) scale(1.5) rotate(20deg); }
         }
+
+        /* Tela da Pergunta */
+        .hidden {
+            display: none !important;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            max-width: 350px;
+            width: 90%;
+        }
+
+        .quiz-container h2 {
+            color: #d63031;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 80px;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #ffb3b3;
+            border-radius: 10px;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        input:focus {
+            border-color: #d63031;
+        }
+
+        button {
+            background-color: #d63031;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #b32425;
+        }
+
+        .error-msg {
+            color: #d63031;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+
+        /* Tela Final da Foto */
+        .final-image {
+            max-width: 100%;
+            max-height: 60vh;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .final-text {
+            color: #2d3436;
+            font-size: 1.4rem;
+            font-weight: bold;
+            line-height: 1.6;
+            max-width: 400px;
+            padding: 0 20px;
+            animation: fadeIn 2.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Toque no coração para ver uma mensagem...</h1>
-    <p>(Ative o som para uma surpresa!)</p>
+    <!-- TELA 1: CORAÇÃO PULSANDO E FRASES -->
+    <div id="screen1" class="screen">
+        <h1>Toque no coração para ver uma mensagem...</h1>
+        <p>(Uma surpresa te espera no final)</p>
 
-    <div class="heart-container" id="heartBtn">
-        <div class="heart"></div>
+        <div class="heart-container" id="heartBtn">
+            <div class="heart"></div>
+        </div>
+
+        <div class="message-box">
+            <div class="message" id="textMessage"></div>
+        </div>
     </div>
 
-    <div class="message-box">
-        <div class="message" id="textMessage">Eu te amo muito! ❤️</div>
+    <!-- TELA 2: A PERGUNTA -->
+    <div id="screen2" class="screen hidden">
+        <div class="quiz-container">
+            <h2>Em qual dia de outubro eu comecei a conversar com o amor da minha vida?</h2>
+            <div>
+                <input type="number" id="answerInput" placeholder="Dia">
+                <span style="font-size: 1.2rem; font-weight: bold; color: #636e72;"> de Outubro</span>
+            </div>
+            <br>
+            <button id="submitBtn">Responder</button>
+            <div id="errorMsg" class="error-msg"></div>
+        </div>
+    </div>
+
+    <!-- TELA 3: FOTO E TEXTO FINAL -->
+    <div id="screen3" class="screen hidden">
+        <!-- Puxa a foto que você subiu no GitHub -->
+        <img src="foto.png" alt="Nós dois" class="final-image">
+        <div class="final-text">
+            No momento em que eu te conheci, a minha vida mudou completamente para melhor. Cada instante com você virou o meu momento favorito. Obrigado por existir e por ser o meu amor! ❤️
+        </div>
     </div>
 
     <script>
-        // Personalize as suas frases aqui dentro das aspas:
         const frases = [
             "Você é o meu pensamento favorito do dia. ",
             "Cada detalhe teu me faz ter certeza de que quero você para sempre.",
             "Obrigado por ser minha parceria de todas as horas. ",
             "Meu lugar favorito no mundo é dentro do teu abraço.",
             "Seu sorriso é a coisa mais linda desse universo. ",
-            "Você não imagina o tamanho do meu amor por vc.",
+            "Você não imagina o tamanho do bem que me faz.",
             "Com você, os dias mais simples viram os melhores momentos.",
             "Você é o meu amor, minha melhor amiga e meu porto seguro. "
         ];
 
         let index = 0;
+        const screen1 = document.getElementById('screen1');
+        const screen2 = document.getElementById('screen2');
+        const screen3 = document.getElementById('screen3');
+        
         const heartBtn = document.getElementById('heartBtn');
         const textMessage = document.getElementById('textMessage');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Inicializa com a primeira frase
+        textMessage.textContent = frases[0];
+        textMessage.classList.add('show');
+        index = 1;
 
         heartBtn.addEventListener('click', (e) => {
-            // 1. Troca a frase com efeito fade-in
+            createFloatingHeart(e.clientX, e.clientY);
+
+            // Se as frases acabaram, vai para a tela de pergunta
+            if (index >= frases.length) {
+                textMessage.classList.remove('show');
+                setTimeout(() => {
+                    screen1.classList.add('hidden');
+                    screen2.classList.remove('hidden');
+                }, 400);
+                return;
+            }
+
+            // Transição suave das frases
             textMessage.classList.remove('show');
-            
             setTimeout(() => {
                 textMessage.textContent = frases[index];
                 textMessage.classList.add('show');
-                index = (index + 1) % frases.length; // Volta para o início quando as frases acabarem
+                index++;
             }, 200);
+        });
 
-            // 2. Cria o efeito visual de corações flutuando onde ela clicou
-            createFloatingHeart(e.clientX, e.clientY);
+        // Validação da Resposta
+        submitBtn.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim();
+            
+            if (userAnswer === "16") {
+                errorMsg.textContent = "";
+                screen2.classList.add('hidden');
+                screen3.classList.remove('hidden');
+            } else {
+                errorMsg.textContent = "Hum... esse não foi o dia! Tente lembrar de novo. ";
+                answerInput.value = "";
+                answerInput.focus();
+            }
+        });
+
+        // Permite dar 'Enter' no campo de resposta
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
         });
 
         function createFloatingHeart(x, y) {
@@ -172,20 +320,9 @@
             fHeart.classList.add('floating-heart');
             fHeart.style.left = (x - 10) + 'px';
             fHeart.style.top = (y - 20) + 'px';
-            
-            // Direção aleatória para os lados enquanto sobe
-            const randomX = (Math.random() - 0.5) * 40;
-            fHeart.style.setProperty('--randX', `${randomX}px`);
-
             document.body.appendChild(fHeart);
-
-            setTimeout(() => {
-                fHeart.remove();
-            }, 1000);
+            setTimeout(() => { fHeart.remove(); }, 1000);
         }
-
-        // Mostra a primeira frase logo de cara
-        textMessage.classList.add('show');
     </script>
 </body>
 </html>
